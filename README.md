@@ -1,4 +1,3 @@
-# Student-Management
 # Student Management System
 
 ![Python](https://img.shields.io/badge/Python-3.11%2B-blue)
@@ -7,6 +6,8 @@
 
 ## 🎯 Overview
 The **Student Management System** is a comprehensive web application built with **Django** designed to streamline the administration of student records. It provides a secure and efficient way to manage student data, including personal profiles and academic records, leveraging a **MySQL** database for robust data handling.
+
+> For detailed technical specifications, please refer to the Project Documentation.
 
 ## ✨ Features
 - **Student Profile Management**: Create, view, update, and delete student records easily.
