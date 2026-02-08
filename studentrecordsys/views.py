@@ -24,6 +24,19 @@ def SIGNUP(request):
     if request.method == "POST":
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
+            email = form.cleaned_data.get("email")
+            
+            # Check if email exists in Student model
+            student_exists = Student.objects.filter(email=email).exists()
+            if student_exists:
+                messages.error(request, "This email is registered as a student. Students cannot create staff accounts.")
+                return redirect("signup")
+            
+            # Check if email already exists as a user
+            if CustomUser.objects.filter(email=email).exists():
+                messages.error(request, "This email is already registered.")
+                return redirect("signup")
+            
             user = form.save(commit=False)
             user.is_staff = True
             user.save()
@@ -57,10 +70,19 @@ def LOGIN(request):
 
 def doLogin(request):
     if request.method == "POST":
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        
+        # Check if email exists in Student model
+        student_exists = Student.objects.filter(email=email).exists()
+        if student_exists:
+            messages.error(request, "Students cannot login through this panel. Please use the student portal.")
+            return redirect("login")
+        
         user = EmailBackEnd.authenticate(
             request,
-            username=request.POST.get("email"),
-            password=request.POST.get("password"),
+            username=email,
+            password=password,
         )
         if user != None:
             if user.is_staff:
@@ -69,7 +91,6 @@ def doLogin(request):
             else:
                 messages.error(request, "You are not authorized to access this panel")
                 return redirect("login")
-
         else:
             messages.error(request, "Email or Password is not valid")
             return redirect("login")
@@ -128,7 +149,7 @@ def CHANGE_PASSWORD(request):
 
     if len(ch) > 0:
         data = User.objects.get(id=request.user.id)
-        context["data"]: data
+        context["data"]= data
     if request.method == "POST":
         current = request.POST["cpwd"]
         new_pas = request.POST["npwd"]
